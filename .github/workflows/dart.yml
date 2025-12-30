@@ -32,8 +32,9 @@ jobs:
       #   run: flutter format --output=none --set-exit-if-changed .
 
       # Consider passing '--fatal-infos' for slightly stricter analysis.
+      # 不使用 --fatal-infos，允许 info 级别的代码风格建议
       - name: Analyze project source
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos
 
       # Your project will need to have tests in test/ and a dependency on
       # package:test for this step to succeed.

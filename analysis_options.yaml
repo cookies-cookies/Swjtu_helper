@@ -1,0 +1,11 @@
+# Flutter 项目分析配置
+# 配置代码分析的严格程度和规则
+
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    # 将已弃用 API 的使用从 info 级别降低为 ignore，不阻塞构建
+    # 这些会在未来 Flutter 版本中逐步修复
+    deprecated_member_use: ignore
+

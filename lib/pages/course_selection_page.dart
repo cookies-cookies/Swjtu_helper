@@ -284,7 +284,6 @@ class _CourseSelectionPageState extends State<CourseSelectionPage> {
         isNextSemester: isNextSemester,
       );
 
-      bool useFallback = false;
       Map<String, String>? result;
 
       if (queryHtml != null) {
@@ -309,7 +308,6 @@ class _CourseSelectionPageState extends State<CourseSelectionPage> {
             key,
             isNextSemester: true, // 修改termId到下学期
           );
-          useFallback = true;
         }
       }
 

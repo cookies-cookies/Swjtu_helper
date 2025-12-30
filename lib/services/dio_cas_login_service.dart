@@ -106,14 +106,6 @@ class DioCasLoginService {
     return !(hasUnauthorized || hasBothLoginFields);
   }
 
-  Future<String?> _fetchStudentInfoHtml() async {
-    final resp = await _dio.get(
-      '$BASE$STUDENTINFO_PATH',
-      options: Options(headers: {'Referer': '$BASE$USERFRAMEWORK_PATH'}),
-    );
-    return resp.data?.toString();
-  }
-
   Future<void> _saveDebugText(String filename, String content) async {
     try {
       final file = File(

@@ -80,7 +80,9 @@ class SimpleCookieJar {
         }
       }
       // replace existing same name+domain
-      final existingIndex = _cookies.indexWhere((c) => c.name == name && c.domain == domain);
+      final existingIndex = _cookies.indexWhere(
+        (c) => c.name == name && c.domain == domain,
+      );
       if (existingIndex >= 0) {
         _cookies[existingIndex].value = value;
       } else {
@@ -90,7 +92,9 @@ class SimpleCookieJar {
   }
 
   void set(String name, String value, {String? domain}) {
-    final idx = _cookies.indexWhere((c) => c.name == name && c.domain == domain);
+    final idx = _cookies.indexWhere(
+      (c) => c.name == name && c.domain == domain,
+    );
     if (idx >= 0) {
       _cookies[idx].value = value;
     } else {
@@ -288,7 +292,9 @@ Future<bool> casLoginAndFollow(
     String salt = fields['pwdEncryptSalt'] ?? '';
     String lt = fields['lt'] ?? '';
     String execution = fields['execution'] ?? '';
-    print('[*] initial saltLen=${salt.length} ltLen=${lt.length} execLen=${execution.length}');
+    print(
+      '[*] initial saltLen=${salt.length} ltLen=${lt.length} execLen=${execution.length}',
+    );
 
     if (salt.isEmpty || lt.isEmpty) {
       // retry once with alternate headers
@@ -309,7 +315,9 @@ Future<bool> casLoginAndFollow(
       salt = salt.isNotEmpty ? salt : (f2['pwdEncryptSalt'] ?? '');
       lt = lt.isNotEmpty ? lt : (f2['lt'] ?? '');
       execution = execution.isNotEmpty ? execution : (f2['execution'] ?? '');
-      print('[*] after retry saltLen=${salt.length} ltLen=${lt.length} execLen=${execution.length}');
+      print(
+        '[*] after retry saltLen=${salt.length} ltLen=${lt.length} execLen=${execution.length}',
+      );
     }
 
     if (salt.isEmpty) {
@@ -338,17 +346,23 @@ Future<bool> casLoginAndFollow(
         }
         if (nodeEnc.isNotEmpty) {
           // 我们记录 node-runner 密文但不直接使用，保持与 Python 回退加密处理方式统一
-          print('[*] node-runner encrypted (len=${nodeEnc.length}), will replace with AES fallback to mimic python flow.');
+          print(
+            '[*] node-runner encrypted (len=${nodeEnc.length}), will replace with AES fallback to mimic python flow.',
+          );
         }
       } catch (e) {
         print('[!] node-runner failed: $e');
       }
     }
-    print('[*] pre-fallback saltLen=${salt.length} ltLen=${lt.length} encLen=${encPassword.length}');
+    print(
+      '[*] pre-fallback saltLen=${salt.length} ltLen=${lt.length} encLen=${encPassword.length}',
+    );
 
     // 始终使用与 Python 脚本一致的 AES CBC 回退加密（忽略 node-runner 密文差异）
     encPassword = encryptPasswordFallback(password, salt);
-    print('[*] Using AES fallback encrypted password (len=${encPassword.length}).');
+    print(
+      '[*] Using AES fallback encrypted password (len=${encPassword.length}).',
+    );
 
     // Build payload
     final payload = {
@@ -481,9 +495,8 @@ Future<bool> casLoginAndFollow(
 
 Future<void> interactiveLoop() async {
   final jar = SimpleCookieJar();
-  final username = Platform.environment['JWC_USERNAME'] ?? '2024111748';
-  final password =
-      Platform.environment['JWC_PASSWORD'] ?? 'replace-with-your-password';
+  final username = Platform.environment['JWC_USERNAME'] ?? 'your-student-id';
+  final password = Platform.environment['JWC_PASSWORD'] ?? 'your-password';
   final stdinLines = stdin
       .transform(utf8.decoder)
       .transform(const LineSplitter());
@@ -582,8 +595,8 @@ class CasLoginService {
   final SimpleCookieJar _jar = SimpleCookieJar();
   final List<String> _logs = [];
   bool _disposed = false;
-  static const String HARD_USERNAME = '2024111748';
-  static const String HARD_PASSWORD = 'replace-with-your-password';
+  static const String HARD_USERNAME = 'your-student-id';
+  static const String HARD_PASSWORD = 'your-password';
 
   void _addLog(String line) {
     _logs.add(line);
@@ -705,8 +718,7 @@ class CasLoginService {
     _logs.clear();
   }
 
-  Map<String,String> getCookies() => _jar.toMap();
-
+  Map<String, String> getCookies() => _jar.toMap();
 }
 
 String _randomString(int n) {
@@ -726,14 +738,19 @@ String encryptPasswordFallback(String plain, String keySalt) {
   final blockSize = 16;
   final bytes = utf8.encode(full);
   final padLen = blockSize - (bytes.length % blockSize);
-  final padded = List<int>.from(bytes)..addAll(List<int>.filled(padLen, padLen));
+  final padded = List<int>.from(bytes)
+    ..addAll(List<int>.filled(padLen, padLen));
   List<int> keyBytes = utf8.encode(keySalt);
-  if (!(keyBytes.length == 16 || keyBytes.length == 24 || keyBytes.length == 32)) {
+  if (!(keyBytes.length == 16 ||
+      keyBytes.length == 24 ||
+      keyBytes.length == 32)) {
     keyBytes = md5.convert(keyBytes).bytes;
   }
   final key = enc.Key(Uint8List.fromList(keyBytes));
   final iv = enc.IV.fromUtf8(ivStr);
-  final cipher = enc.Encrypter(enc.AES(key, mode: enc.AESMode.cbc, padding: null));
+  final cipher = enc.Encrypter(
+    enc.AES(key, mode: enc.AESMode.cbc, padding: null),
+  );
   final encrypted = cipher.encryptBytes(padded, iv: iv);
   return base64.encode(encrypted.bytes);
 }
